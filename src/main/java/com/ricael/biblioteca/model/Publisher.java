@@ -7,6 +7,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "tb_publishers")
 public class Publisher {
 
     @Id

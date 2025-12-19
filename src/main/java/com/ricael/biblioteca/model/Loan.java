@@ -9,6 +9,7 @@ import java.time.Instant;
 
 @Entity
 @Data
+@Table(name = "tb_loans")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Loan {
