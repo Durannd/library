@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class LoanServices {
     @Autowired
-    LoanRepository loanRepository;
+    private LoanRepository loanRepository;
 
     public List<Loan> getLoansByUserId(Long id) {
         return loanRepository.findByUserId(id).orElseThrow(() -> new RuntimeException("No loans found for user with id: " + id));
