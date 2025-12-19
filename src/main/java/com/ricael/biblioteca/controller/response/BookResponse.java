@@ -9,7 +9,6 @@ public record BookResponse(
         String title,
         String author,
         String isbn,
-        Long publisherId,
-        int yearPublished,
+        int publishedYear,
         Publisher publisher) {
 }
