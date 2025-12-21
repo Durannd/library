@@ -21,7 +21,7 @@ public class Book {
     private String isbn;
     private int publishedYear;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "publisher_id")
     private Publisher publisher;
 

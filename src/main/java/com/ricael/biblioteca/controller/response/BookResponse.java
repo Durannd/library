@@ -10,5 +10,5 @@ public record BookResponse(
         String author,
         String isbn,
         int publishedYear,
-        Publisher publisher) {
+        PublisherResponse publisher) {
 }

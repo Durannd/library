@@ -31,7 +31,7 @@ public class BookMapper {
                 book.getAuthor(),
                 book.getIsbn(),
                 book.getPublishedYear(),
-                book.getPublisher()
+                PublisherMapper.toResponse(book.getPublisher())
         );
     }
 }
