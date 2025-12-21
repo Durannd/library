@@ -1,5 +1,8 @@
 package com.ricael.biblioteca.services;
 
+import com.ricael.biblioteca.controller.request.UserRequest;
+import com.ricael.biblioteca.controller.response.UserResponse;
+import com.ricael.biblioteca.mappers.UserMapper;
 import com.ricael.biblioteca.model.User;
 import com.ricael.biblioteca.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +23,20 @@ public class UserServices {
         }
     }
 
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public UserResponse saveUser(UserRequest user) {
+        return UserMapper.toResponse(userRepository.save(UserMapper.toEntity(user)));
     }
 
-    public User findUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    public UserResponse findUserById(Long id) {
+        return UserMapper.toResponse(userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
     }
 
-    public void updateUser(User user, Long id) {
+    public UserResponse updateUser(UserRequest user, Long id) {
         if (userRepository.existsById(id)) {
-            user.setId(id);
-            userRepository.save(user);
-        }else{
+            User u = UserMapper.toEntity(user);
+            u.setId(id);
+            return UserMapper.toResponse(userRepository.save(u));
+        } else {
             throw new RuntimeException("User not found");
         }
     }
