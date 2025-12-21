@@ -1,5 +1,8 @@
 package com.ricael.biblioteca.services;
 
+import com.ricael.biblioteca.controller.request.LoanRequest;
+import com.ricael.biblioteca.controller.response.LoanResponse;
+import com.ricael.biblioteca.mappers.LoanMapper;
 import com.ricael.biblioteca.model.Loan;
 import com.ricael.biblioteca.repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +15,22 @@ public class LoanServices {
     @Autowired
     private LoanRepository loanRepository;
 
-    public List<Loan> getLoansByUserId(Long id) {
-        return loanRepository.findByUserId(id).orElseThrow(() -> new RuntimeException("No loans found for user with id: " + id));
+    public List<LoanResponse> getLoansByUserId(Long id) {
+        return loanRepository.findByUserId(id).orElseThrow(() -> new RuntimeException("No loans found for user with id: " + id))
+                .stream()
+                .map(LoanMapper::toResponse)
+                .toList();
     }
 
-    public List<Loan> getLoansByBookId(Long id) {
-        return loanRepository.findByBookId(id);
+    public List<LoanResponse> getLoansByBookId(Long id) {
+        return loanRepository.findByBookId(id)
+                .stream()
+                .map(LoanMapper::toResponse)
+                .toList();
     }
 
-    public Loan saveLoan(Loan loan) {
-        return loanRepository.save(loan);
+    public LoanResponse saveLoan(LoanRequest loan) {
+        return LoanMapper.toResponse(loanRepository.save(LoanMapper.toEntity(loan)));
     }
 
     public void deleteLoan(Long id) {
