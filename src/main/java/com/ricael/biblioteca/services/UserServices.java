@@ -8,6 +8,8 @@ import com.ricael.biblioteca.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServices {
 
@@ -39,5 +41,17 @@ public class UserServices {
         } else {
             throw new RuntimeException("User not found");
         }
+    }
+
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(UserMapper::toResponse)
+                .toList();
+    }
+
+    public List<UserResponse> getUsersByNameLike(String name) {
+        return userRepository.findByNameContainingIgnoreCase(name).stream()
+                .map(UserMapper::toResponse)
+                .toList();
     }
 }

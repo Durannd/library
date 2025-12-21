@@ -1,12 +1,15 @@
 package com.ricael.biblioteca.controller;
 
 import com.ricael.biblioteca.controller.request.UserRequest;
+import com.ricael.biblioteca.controller.response.UserResponse;
 import com.ricael.biblioteca.mappers.UserMapper;
 import com.ricael.biblioteca.model.User;
 import com.ricael.biblioteca.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController()
 @RequestMapping("/user")
@@ -15,16 +18,14 @@ public class UserController {
     private UserServices userServices;
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable long id) {
-        User user = userServices.findUserById(id);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserResponse> getUser(@PathVariable long id) {
+        return ResponseEntity.ok(userServices.findUserById(id));
     }
 
-    @PutMapping()
-    public ResponseEntity<User> createUser(@RequestBody UserRequest user) {
+    @PostMapping()
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest user) {
 
-        User savedUser = userServices.saveUser(UserMapper.toEntity(user));
-        return ResponseEntity.ok(savedUser);
+        return ResponseEntity.ok(userServices.saveUser(user));
     }
 
     @DeleteMapping("/{id}")
@@ -34,9 +35,19 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserRequest user) {
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest user) {
 
-        userServices.updateUser(UserMapper.toEntity(user), id);
+        userServices.updateUser(user, id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok(userServices.getAllUsers());
+    }
+
+    @GetMapping("/by-name")
+    public ResponseEntity<List<UserResponse>> getUsersByNameLike(@RequestParam String name) {
+        return ResponseEntity.ok(userServices.getUsersByNameLike(name));
     }
 }
