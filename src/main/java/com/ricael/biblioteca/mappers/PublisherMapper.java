@@ -12,7 +12,7 @@ public class PublisherMapper {
             return null;
         }
         return new Publisher(
-                null,
+                request.id(),
                 request.name(),
                 request.address(),
                 request.phone(),
