@@ -12,7 +12,12 @@ public class UserServices {
     private UserRepository userRepository;
 
     public void deleteUserById(Long id) {
-        userRepository.deleteById(id);
+
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("User not found");
+        }
     }
 
     public User saveUser(User user) {
@@ -23,7 +28,12 @@ public class UserServices {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public void updateUser(User user){
-        userRepository.save(user);
+    public void updateUser(User user, Long id) {
+        if (userRepository.existsById(id)) {
+            user.setId(id);
+            userRepository.save(user);
+        }else{
+            throw new RuntimeException("User not found");
+        }
     }
 }
