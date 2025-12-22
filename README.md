@@ -1,6 +1,6 @@
 # 📚 Library Management API
 
-A comprehensive REST API for library management, built with Spring Boot 4.0 and Java 21. The system provides complete functionality for managing books, publishers, users, and loans, with interactive documentation via Swagger.
+A comprehensive REST API for library management, built with Spring Boot 4.0 and Java 21. The system provides complete functionality for managing books, publishers, users, and loans, with interactive documentation, containerization support, and automated CI/CD deployment.
 
 ## 🚀 Technologies
 
@@ -11,6 +11,10 @@ A comprehensive REST API for library management, built with Spring Boot 4.0 and 
 - **Lombok** - Boilerplate code reduction
 - **SpringDoc OpenAPI (Swagger)** - API documentation
 - **Maven** - Dependency management
+- **Docker** - Containerization
+- **GitHub Actions** - CI/CD automation
+- **Azure App Service** - Cloud hosting
+- **NeonDB** - Serverless PostgreSQL database
 
 ## 📋 Features
 
@@ -52,16 +56,89 @@ src/main/java/com/ricael/biblioteca/
 └── response/           # Response DTOs
 ```
 
+## 🐳 Docker Support
+
+The application is fully containerized using Docker for easy deployment and scalability.
+
+### Dockerfile
+The project includes a multi-stage Dockerfile that:
+- Uses Maven to build the application
+- Creates an optimized production image with Java 21
+- Reduces image size and improves security
+- Exposes port 8080 for the application
+
+### Running with Docker
+
+**Build the image:**
+```bash
+docker build -t library-api .
+```
+
+**Run the container:**
+```bash
+docker run -p 8080:8080 \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://your-db-host:5432/biblioteca \
+  -e SPRING_DATASOURCE_USERNAME=your_username \
+  -e SPRING_DATASOURCE_PASSWORD=your_password \
+  library-api
+```
+
+## ☁️ Cloud Deployment
+
+### Azure App Service
+The application is deployed on **Azure App Service**, providing:
+- Automatic scaling and load balancing
+- High availability and reliability
+- Easy integration with Azure ecosystem
+- SSL/TLS certificate management
+
+### NeonDB PostgreSQL
+The database is hosted on **NeonDB**, a serverless PostgreSQL platform offering:
+- Serverless architecture with auto-scaling
+- Instant database provisioning
+- Automatic backups and point-in-time recovery
+- Free tier for development and small projects
+- Zero-downtime storage scaling
+
+**Connection Configuration:**
+```properties
+spring.datasource.url=jdbc:postgresql://<your-neondb-host>/biblioteca?sslmode=require
+spring.datasource.username=<neondb-username>
+spring.datasource.password=<neondb-password>
+spring.jpa.hibernate.ddl-auto=update
+```
+
+## 🔄 CI/CD with GitHub Actions
+
+The project uses **GitHub Actions** for continuous integration and deployment:
+
+### Automated Workflows
+- **Build & Test**: Automatic compilation and testing on every push
+- **Docker Image Build**: Automated Docker image creation
+- **Azure Deployment**: Continuous deployment to Azure App Service
+- **Code Quality Checks**: Linting and code analysis
+
+### Deployment Pipeline
+1. Code is pushed to the main branch
+2. GitHub Actions triggers the workflow
+3. Application is built and tested
+4. Docker image is created and pushed to registry
+5. Azure App Service pulls the new image
+6. Application is automatically deployed with zero downtime
+
 ## 🔧 Getting Started
 
 ### Prerequisites
 - Java 21 or higher
-- PostgreSQL installed and running
+- PostgreSQL installed and running (or use NeonDB)
 - Maven 3.6+
+- Docker (optional, for containerized deployment)
 
 ### Database Configuration
 
-1. Create a PostgreSQL database: 
+**Option 1: Local PostgreSQL**
+
+1. Create a PostgreSQL database:
 ```sql
 CREATE DATABASE biblioteca;
 ```
@@ -70,8 +147,20 @@ CREATE DATABASE biblioteca;
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/biblioteca
 spring.datasource.username=your_username
-spring.datasource. password=your_password
+spring.datasource.password=your_password
 spring.jpa.hibernate.ddl-auto=update
+```
+
+**Option 2: NeonDB (Recommended for Production)**
+
+1. Create a free account at [NeonDB](https://neon.tech)
+2. Create a new PostgreSQL database
+3. Copy the connection string provided
+4. Update `application.properties`:
+```properties
+spring.datasource.url=jdbc:postgresql://<neondb-host>/biblioteca?sslmode=require
+spring.datasource.username=<neondb-username>
+spring.datasource.password=<neondb-password>
 ```
 
 ### Running the Application
@@ -84,14 +173,20 @@ spring.jpa.hibernate.ddl-auto=update
 **Or build and run:**
 ```bash
 ./mvnw clean package
-java -jar target/biblioteca-0.0.1-SNAPSHOT. jar
+java -jar target/biblioteca-0.0.1-SNAPSHOT.jar
 ```
 
-The application will be available at:  `http://localhost:8080`
+**Using Docker:**
+```bash
+docker build -t library-api .
+docker run -p 8080:8080 library-api
+```
+
+The application will be available at: `http://localhost:8080`
 
 ## 📚 API Documentation
 
-Access the interactive Swagger UI documentation after starting the application: 
+Access the interactive Swagger UI documentation after starting the application:
 
 ```
 http://localhost:8080/swagger-ui.html
@@ -138,7 +233,7 @@ http://localhost:8080/swagger-ui.html
   "name": String,
   "adress": String,
   "phone": String,
-  "email":  String
+  "email": String
 }
 ```
 
@@ -147,9 +242,9 @@ http://localhost:8080/swagger-ui.html
 {
   "id": Long,
   "title": String,
-  "author":  String,
+  "author": String,
   "isbn": String,
-  "publishedYear":  Integer,
+  "publishedYear": Integer,
   "publisher": Publisher
 }
 ```
@@ -158,7 +253,7 @@ http://localhost:8080/swagger-ui.html
 ```java
 {
   "id": Long,
-  "name":  String,
+  "name": String,
   "address": String,
   "phone": String,
   "email": String
@@ -168,10 +263,10 @@ http://localhost:8080/swagger-ui.html
 ### Loan
 ```java
 {
-  "id":  Long,
+  "id": Long,
   "userId": Long,
   "bookId": Long,
-  "loanDate":  Instant,
+  "loanDate": Instant,
   "returnDate": Instant
 }
 ```
@@ -186,6 +281,10 @@ http://localhost:8080/swagger-ui.html
 - **Automated Documentation** with OpenAPI 3.0
 - **Well-defined JPA Relationships** between entities
 - **Custom Queries** for specific searches
+- **Containerization** with Docker for consistent deployments
+- **CI/CD Pipeline** with GitHub Actions
+- **Cloud-Native** deployment on Azure App Service
+- **Serverless Database** with NeonDB PostgreSQL
 
 ## 🛠️ Future Enhancements
 
@@ -197,6 +296,8 @@ http://localhost:8080/swagger-ui.html
 - [ ] Add Bean Validation constraints
 - [ ] Create notification system (email/SMS)
 - [ ] Implement operation auditing
+- [ ] Add monitoring and observability (Prometheus, Grafana)
+- [ ] Implement rate limiting and API throttling
 
 ## 👨‍💻 Author
 
@@ -204,8 +305,8 @@ http://localhost:8080/swagger-ui.html
 
 ## 📝 License
 
-This project was developed for educational and portfolio purposes. 
+This project was developed for educational and portfolio purposes.
 
 ---
 
-⭐ If you found this project useful, please consider giving it a star! 
+⭐ If you found this project useful, please consider giving it a star!
