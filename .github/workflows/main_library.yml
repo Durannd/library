@@ -49,9 +49,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_C56DD17F63324B3D98B07D259561E705 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_CD9BAB309EAD474D824BC20DE62868FA }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E562CA8F1B9643FD8CC7A7AFAA1C10B8 }}
+          # Use a single JSON secret named AZURE_CREDENTIALS that contains
+          # {"clientId": "...", "clientSecret": "...", "subscriptionId": "...", "tenantId": "..."}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -60,4 +60,11 @@ jobs:
           app-name: 'library'
           slot-name: 'Production'
           package: '*.jar'
+
+      - name: Build with Maven
+        run: mvn clean package
+        env:
+          SPRING_DATASOURCE_URL: ${{ secrets.DB_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
           
