@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -54,12 +55,19 @@ public class LoanServices {
     @Transactional
     public LoanResponse updateLoan(LoanRequest loan, Long id) {
 
-        if (loanRepository.existsById(id)) {
-            Loan l = LoanMapper.toEntity(loan);
-            l.setId(id);
-            return LoanMapper.toResponse(loanRepository.save(l));
-        }
-        throw new RuntimeException("Loan with id: " + id + " does not exist.");
+
+        Loan l = loanRepository.findById(id).orElseThrow(() -> new RuntimeException("Loan with id: " + id + " does not exist."));
+        l.setBookId(loan.bookId());
+        l.setUserId(loan.userId());
+        return LoanMapper.toResponse(loanRepository.save(l));
+
+    }
+
+    @Transactional
+    public LoanResponse addDaysToReturnDate(Long id, int days) {
+        Loan loan = loanRepository.findById(id).orElseThrow(() -> new RuntimeException("Loan with id: " + id + " does not exist."));
+        loan.setReturnDate(loan.getReturnDate().plusSeconds(days * 24L * 60L * 60L));
+        return LoanMapper.toResponse(loanRepository.save(loan));
     }
 
     public LoanResponse getById(Long id) {

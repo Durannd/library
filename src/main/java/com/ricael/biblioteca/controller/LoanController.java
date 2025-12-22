@@ -91,5 +91,15 @@ public class LoanController {
         return ResponseEntity.ok(loanServices.getById(id));
     }
 
+    @Operation(description = "Add days to the return date of a loan")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully added days to return date"),
+            @ApiResponse(responseCode = "404", description = "Loan not found")
+    })
+    @PutMapping("/add-days/{id}/{days}")
+    public ResponseEntity<LoanResponse> addDaysToReturnDate(@PathVariable Long id, @PathVariable int days) {
+        return ResponseEntity.ok(loanServices.addDaysToReturnDate(id, days));
+    }
+
 
 }
