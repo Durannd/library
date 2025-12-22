@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Generated;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Data
@@ -23,6 +25,13 @@ public class Loan {
     private Long bookId;
 
     private Instant loanDate;
+
+
     private Instant returnDate;
 
+    @PrePersist
+    protected void onCreate() {
+        this.loanDate = Instant.now();
+        this.returnDate = this.loanDate.plus(30, ChronoUnit.DAYS);
+    }
 }

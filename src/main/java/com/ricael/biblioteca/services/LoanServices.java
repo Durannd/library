@@ -7,6 +7,7 @@ import com.ricael.biblioteca.model.Loan;
 import com.ricael.biblioteca.repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,21 +30,41 @@ public class LoanServices {
                 .toList();
     }
 
+    @Transactional
     public LoanResponse saveLoan(LoanRequest loan) {
         return LoanMapper.toResponse(loanRepository.save(LoanMapper.toEntity(loan)));
     }
 
+    @Transactional
     public void deleteLoan(Long id) {
-        loanRepository.deleteById(id);
+        if (!loanRepository.existsById(id)) {
+            throw new RuntimeException("Loan with id: " + id + " does not exist.");
+        } else {
+
+            loanRepository.deleteById(id);
+        }
     }
 
+    @Transactional
     public void deleteLoansByBookId(Long id) {
         List<Loan> loans = loanRepository.findByBookId(id);
         loanRepository.deleteAll(loans);
     }
 
-    public void updateLoan(Loan loan) {
-        loanRepository.save(loan);
+    @Transactional
+    public LoanResponse updateLoan(LoanRequest loan, Long id) {
+
+        if (loanRepository.existsById(id)) {
+            Loan l = LoanMapper.toEntity(loan);
+            l.setId(id);
+            return LoanMapper.toResponse(loanRepository.save(l));
+        }
+        throw new RuntimeException("Loan with id: " + id + " does not exist.");
+    }
+
+    public LoanResponse getById(Long id) {
+        Loan loan = loanRepository.findById(id).orElseThrow(() -> new RuntimeException("Loan with id: " + id + " does not exist."));
+        return LoanMapper.toResponse(loan);
     }
 
 }
